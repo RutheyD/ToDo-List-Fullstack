@@ -34,13 +34,14 @@ app.MapGet("/items", async (ToDoDbContext context) =>{
 return Results.Ok(items);
 });
 
-app.MapPut("/items/{id}",async(int id,[FromBody]Item item,ToDoDbContext context)=>{
-var tmpItem = await context.Items.FindAsync(id);
-if(tmpItem is null)
-return Results.NotFound("Item not found!!");
-    tmpItem.IsComplete=item.IsComplete;
-await context.SaveChangesAsync();
-return Results.NoContent(); 
+app.MapPut("/items/{id}",async(int id,bool iscomplete,ToDoDbContext context)=>{
+var item = await context.Items.FindAsync(id);
+    if (item is null) return Results.NotFound();
+
+    item.IsComplete = iscomplete;
+
+    await context.SaveChangesAsync();
+    return Results.NoContent();
 });
 app.MapPost("/items",async([FromBody]Item item,ToDoDbContext context)=>{
  context.Add(item);
@@ -57,3 +58,13 @@ if(tmpItem is null)
 });
 
 app.Run();
+/*app.MapPut("/items/{id}", async (int id, bool iscomplete, ToDoDbContext db) =>
+{
+    var item = await db.Items.FindAsync(id);
+    if (item is null) return Results.NotFound();
+
+    item.IsComplete = iscomplete;
+
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+});*/

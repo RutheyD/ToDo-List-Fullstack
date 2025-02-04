@@ -15,14 +15,17 @@ axios.interceptors.response.use(
 
 export default {
   getTasks: async () => {
+    console.log(process.env.REACT_APP_API_URL);
+
     const result = await axios.get(`/items`)    
     // const result = await axios.get(`${apiUrl}/items`)    
     return result.data;
   },
 
   addTask: async (name) => {
+    
+    console.log('addTask', name)
       const result = await axios.post(`/items`,
-        // const result = await axios.post(`${apiUrl}/items`,
        { Name:name,
         IsComplete:false
         })
@@ -31,15 +34,16 @@ export default {
   },
 
   setCompleted: async (id, isComplete) => {
-      const result = await axios.put(`/items/${id}`, 
-        // const result = await axios.put(`${apiUrl}/items/${id}`, 
-      {IsComplete: isComplete })
+    
+    console.log('setCompleted', {id, isComplete})
+      const result = await axios.put(`/items/${id}?iscomplete=${isComplete}`, 
+      {})
     return {result};
   },
 
   deleteTask: async (id) => {
-    const result = await axios.delete(`/items/${id}`)
-    // const result = await axios.delete(`${apiUrl}/items/${id}`)
     console.log('deleteTask')
+    const result = await axios.delete(`/items/${id}`)
+ 
   }
 };
