@@ -9,22 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
                 options.UseMySql(builder.Configuration.GetConnectionString("ToDoDB"), 
                 new MySqlServerVersion(new Version(8, 0, 0))));
 //cors
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("AllowAll",
-//         builder => builder.AllowAnyOrigin()
-//                           .AllowAnyMethod()
-//                           .AllowAnyHeader());
-// });
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
 });
+// builder.Services.AddCors(options =>
+// {
+//     options.AddDefaultPolicy(builder =>
+//     {
+//         builder.AllowAnyOrigin()
+//                .AllowAnyMethod()
+//                .AllowAnyHeader();
+//     });
+// });
 //swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -35,8 +35,8 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 // }
-// app.UseCors("AllowAll");
-app.UseCors();
+app.UseCors("AllowAll");
+// app.UseCors();
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Welcome to the ToDo API!");
