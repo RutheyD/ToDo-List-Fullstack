@@ -9,12 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
                 options.UseMySql(builder.Configuration.GetConnectionString("ToDoDB"), 
                 new MySqlServerVersion(new Version(8, 0, 0))));
 //cors
-builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", builder => {
-        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AllowAll",
+//         builder => builder.AllowAnyOrigin()
+//                           .AllowAnyMethod()
+//                           .AllowAnyHeader());
+// });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
     });
 });
-
 //swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,8 +35,10 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 // }
-app.UseCors("AllowAll");
+// app.UseCors("AllowAll");
+app.UseCors();
 app.UseHttpsRedirection();
+
 app.MapGet("/", () => "Welcome to the ToDo API!");
 
 app.MapGet("/items", async (ToDoDbContext context) =>{
@@ -58,13 +70,3 @@ if(tmpItem is null)
 });
 
 app.Run();
-/*app.MapPut("/items/{id}", async (int id, bool iscomplete, ToDoDbContext db) =>
-{
-    var item = await db.Items.FindAsync(id);
-    if (item is null) return Results.NotFound();
-
-    item.IsComplete = iscomplete;
-
-    await db.SaveChangesAsync();
-    return Results.NoContent();
-});*/
